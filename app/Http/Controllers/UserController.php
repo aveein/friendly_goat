@@ -22,15 +22,14 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $user = User::first();
-        
-
-        $input = $request->all();
         //if user does not exists
+        
         if(is_null($user)){
             $this->createUser($request);
         }else{
             $this->updateUser($request,$user);   
         }
+        
 
         return redirect()->back();
 
@@ -38,7 +37,9 @@ class UserController extends Controller
 
     public function createUser($request)
     {   
+        $input = $request->all();
         $request->validate([
+        'name'=>'required',
         'email'=>'required|unique:users',
         'image'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ],['image.required'=>'Image is required']);
@@ -63,14 +64,8 @@ class UserController extends Controller
 
     public function updateUser($request,$user)
     {
-        if($request->has('image')){
-            //removing file if image exists
-            if($user && $user->image_path){
-                $this->removeFile($user->image_path);
-            }
-          $input['image_path'] = $this->uploadImage($request->file('image'));
-         
-        }
+        $input = $request->all();
+        
         if($user && File::exists(public_path($user->image_path))){
             //if exists old image
             $input['image_path'] = $user->image_path;
