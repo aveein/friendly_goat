@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class,'index']);
 
-Route::controller(UserController::class)->prefix('user')->group(function(){
-    Route::get('/','index');
+Route::controller(UserController::class)->prefix('user')->name('user.')->group(function(){
+    Route::get('/','index')->name('index');
+    //update the user
+    Route::put('/update','update')->name('update');
+ 
 });
