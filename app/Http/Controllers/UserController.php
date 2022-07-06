@@ -41,9 +41,9 @@ class UserController extends Controller
         $request->validate([
         'name'=>'required',
         'email'=>'required|unique:users',
-        'image'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        'image'=>'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ],['image.required'=>'Image is required']);
-        
+        $input = $request->all();
         if($request->has('image')){
            
    
@@ -64,6 +64,13 @@ class UserController extends Controller
 
     public function updateUser($request,$user)
     {
+        $request->validate([
+            'name'=>'required',
+            'email'=>'required',
+            'image'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+        $input = $request->all();
+
         if($request->has('image')){
             //removing file if image exists
             if($user && $user->image_path){
@@ -80,7 +87,7 @@ class UserController extends Controller
         //
         $input['password'] = Hash::make($request->password);
         
-      
+  
         $user = User::updateOrCreate(['id'=>$user->id],$input);
         if($user){
             session()->flash('success','Successfully Updated!!');
