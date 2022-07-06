@@ -23,28 +23,39 @@
                 @csrf
                 <div class="card-body">
                   <div class="form-group">
+                    <label for="exampleInputEmail1">Name</label>
+                    <input type="text" value="{{!is_null($user) ? $user->name : ''}}" name="name" class="form-control" id="exampleInputEmail1" placeholder="Enter Name">
+                  </div>
+                  <div class="form-group">
                     <label for="exampleInputEmail1">Email address</label>
-                    <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                    <input type="email" name="email" value="{{!is_null($user) ? $user->email : ''}}" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputFile">File input</label>
                     <div class="input-group">
                       <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="exampleInputFile">
+                        <input type="file" name="image" class="custom-file-input" id="exampleInputFile">
                         <label class="custom-file-label" for="exampleInputFile">Choose file</label>
                       </div>
+
                       <div class="input-group-append">
                         <span class="input-group-text">Upload</span>
                       </div>
                     </div>
+                    <br>
+                    @if (!is_null($user) && $user->image_path)
+                      <img src="{{asset($user->image_path)}}" alt="" height="300px">
+                    @endif
                   </div>
                   <div class="form-group">
                     <label for=""> Status</label>
-                    <input type="checkbox" name="my-checkbox" checked data-bootstrap-switch>
+                    <input type="checkbox" name="active_status" value="1" @if (!is_null($user) && $user->active_status)
+                    checked
+                    @endif  data-bootstrap-switch>
 
                   </div>
                   
