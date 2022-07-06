@@ -22,9 +22,47 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $user = User::first();
-     
+        
+
         $input = $request->all();
-       
+        //if user does not exists
+        if(is_null($user)){
+            $this->createUser($request);
+        }else{
+            $this->updateUser($request,$user);   
+        }
+
+        return redirect()->back();
+
+    }
+
+    public function createUser($request)
+    {   
+        $request->validate([
+        'email'=>'required|unique:users',
+        'image'=>'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ],['image.required'=>'Image is required']);
+        
+        if($request->has('image')){
+           
+   
+          $input['image_path'] = $this->uploadImage($request->file('image'));
+         
+        }
+  
+        
+        //
+        $input['password'] = Hash::make($request->password);
+        
+      
+        $user = User::create($input);
+        if($user){
+            session()->flash('success','Successfully Created!!');
+        }
+    }
+
+    public function updateUser($request,$user)
+    {
         if($request->has('image')){
             //removing file if image exists
             if($user && $user->image_path){
@@ -40,12 +78,12 @@ class UserController extends Controller
         
         //
         $input['password'] = Hash::make($request->password);
+        
+      
         $user = User::updateOrCreate(['id'=>$user->id],$input);
         if($user){
             session()->flash('success','Successfully Updated!!');
         }
-        return redirect()->back();
-
     }
 
     public function removeFile($path)
